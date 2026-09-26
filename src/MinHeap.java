@@ -85,4 +85,27 @@ public class MinHeap {
         data[i] = data[j];
         data[j] = temp;
     }
+
+    public int peekMin() {
+        if (size == 0) {
+            throw new IllegalStateException("Heap is empty");
+        }
+        return data[0];
+    }
+
+    public int extractMin() {
+        if (size == 0) {
+            throw new IllegalStateException("Heap is empty");
+        }
+
+        int min = data[0];
+        size--;
+        data[0] = data[size];
+
+        if (size > 0) {
+            siftDown(0);
+        }
+
+        return min;
+    }
 }
