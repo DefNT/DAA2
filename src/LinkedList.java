@@ -91,10 +91,53 @@ public class LinkedList implements ListStructure {
         return removedValue;
     }
 
-    @Override public int get(int index) { return 0; }
-    @Override public boolean contains(int x) { return false; }
-    @Override public void resetMetrics() {}
-    @Override public long getAccessCount() { return 0; }
-    @Override public long getComparisonCount() { return 0; }
-    @Override public long getMovementCount() { return 0; }
+    @Override
+    public int get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+            accessCount++;
+        }
+        accessCount++;
+        return current.value;
+    }
+
+    @Override
+    public boolean contains(int x) {
+        Node current = head;
+        while (current != null) {
+            comparisonCount++;
+            if (current.value == x) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    @Override
+    public void resetMetrics() {
+        accessCount = 0;
+        comparisonCount = 0;
+        movementCount = 0;
+    }
+
+    @Override
+    public long getAccessCount() {
+        return accessCount;
+    }
+
+    @Override
+    public long getComparisonCount() {
+        return comparisonCount;
+    }
+
+    @Override
+    public long getMovementCount() {
+        return movementCount;
+    }
 }
