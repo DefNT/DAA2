@@ -19,6 +19,7 @@ public class Benchmark {
                 runWorkload1(w, n);
                 runWorkload2(w, n);
                 runWorkload3(w, n);
+                runWorkload4(w, n);
             }
             System.out.println("Benchmark saved to results/results.csv");
         } catch (FileNotFoundException e) {
@@ -69,6 +70,23 @@ public class Benchmark {
             for (int i = 0; i < 1_000 && list2.size() > 0; i++) list2.remove(0);
         });
         w.println(row(name, "InsertRemove", "Remove-Begin", n, tRemoveBegin, "Movements", list2.getMovementCount()));
+    }
+
+    private static void runWorkload4(PrintWriter w, int n) {
+        int[] values = randomArray(n, n * 10, SEED + 3);
+        MinHeap heap = new MinHeap();
+
+        double tInsert = timeOp(() -> {
+            heap.resetMetrics();
+            for (int v : values) heap.insert(v);
+        });
+        w.println(row("MinHeap", "PriorityProcessing", "Insert", n, tInsert, "Comparisons", heap.getComparisonCount()));
+
+        double tExtract = timeOp(() -> {
+            heap.resetMetrics();
+            while (heap.size() > 0) heap.extractMin();
+        });
+        w.println(row("MinHeap", "PriorityProcessing", "Extract", n, tExtract, "Comparisons", heap.getComparisonCount()));
     }
 
     private static double timeOp(Runnable task) {
