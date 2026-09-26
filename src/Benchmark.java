@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.Random;
 
 public class Benchmark {
@@ -9,6 +11,42 @@ public class Benchmark {
 
     public static void runAll() {
         new File("results/results.csv").mkdirs();
+
+        try (PrintWriter w = new PrintWriter("results/results.csv")) {
+            w.println("Structure,Workload,Operation,N,AvgTimeNs,MetricName,MetricValue");
+
+            for (int n : SIZES) {
+                runWorkload1(w, n);
+                runWorkload2(w, n);
+            }
+            System.out.println("Benchmark saved to results/results.csv");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void runWorkload1(PrintWriter w, int n) {
+        int[] indices = randomArray(10_000, n, SEED + 1);
+
+        DynamicArray da = buildDA(n);
+        double t1 = timeOp(() -> { da.resetMetrics(); for (int idx : indices) da.get(idx); });
+        w.println(row("DynamicArray", "RandomAccess", "get", n, t1, "Accesses", da.getAccessCount()));
+
+        LinkedList ll = buildLL(n);
+        double t2 = timeOp(() -> { ll.resetMetrics(); for (int idx : indices) ll.get(idx); });
+        w.println(row("LinkedList", "RandomAccess", "get", n, t2, "Accesses", ll.getAccessCount()));
+    }
+
+    private static void runWorkload2(PrintWriter w, int n) {
+        int[] targets = randomArray(1_000, n * 10, SEED + 2);
+
+        DynamicArray da = buildDA(n);
+        double t1 = timeOp(() -> { da.resetMetrics(); for (int val : targets) da.contains(val); });
+        w.println(row("DynamicArray", "Search", "contains", n, t1, "Comparisons", da.getComparisonCount()));
+
+        LinkedList ll = buildLL(n);
+        double t2 = timeOp(() -> { ll.resetMetrics(); for (int val : targets) ll.contains(val); });
+        w.println(row("LinkedList", "Search", "contains", n, t2, "Comparisons", ll.getComparisonCount()));
     }
 
     private static double timeOp(Runnable task) {
