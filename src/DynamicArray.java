@@ -79,9 +79,36 @@ public class DynamicArray implements ListStructure {
         return data[index];
     }
 
-    @Override public boolean contains(int x) { return false; }
-    @Override public void resetMetrics() {}
-    @Override public long getAccessCount() { return 0; }
-    @Override public long getComparisonCount() { return 0; }
-    @Override public long getMovementCount() { return 0; }
+    @Override
+    public boolean contains(int x) {
+        for (int i = 0; i < size; i++) {
+            comparisonCount++;
+            if (data[i] == x) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void resetMetrics() {
+        accessCount = 0;
+        comparisonCount = 0;
+        movementCount = 0;
+    }
+
+    @Override
+    public long getAccessCount() {
+        return accessCount;
+    }
+
+    @Override
+    public long getComparisonCount() {
+        return comparisonCount;
+    }
+
+    @Override
+    public long getMovementCount() {
+        return movementCount;
+    }
 }
