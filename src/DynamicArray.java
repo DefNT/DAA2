@@ -53,8 +53,32 @@ public class DynamicArray implements ListStructure {
         size++;
     }
 
-    @Override public int remove(int index) { return 0; }
-    @Override public int get(int index) { return 0; }
+    @Override
+    public int remove(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        int removed = data[index];
+
+        for (int i = index; i < size - 1; i++) {
+            data[i] = data[i + 1];
+            movementCount++;
+        }
+
+        size--;
+        return removed;
+    }
+
+    @Override
+    public int get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        accessCount++;
+        return data[index];
+    }
+
     @Override public boolean contains(int x) { return false; }
     @Override public void resetMetrics() {}
     @Override public long getAccessCount() { return 0; }
