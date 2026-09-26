@@ -18,6 +18,7 @@ public class Benchmark {
             for (int n : SIZES) {
                 runWorkload1(w, n);
                 runWorkload2(w, n);
+                runWorkload3(w, n);
             }
             System.out.println("Benchmark saved to results/results.csv");
         } catch (FileNotFoundException e) {
@@ -47,6 +48,27 @@ public class Benchmark {
         LinkedList ll = buildLL(n);
         double t2 = timeOp(() -> { ll.resetMetrics(); for (int val : targets) ll.contains(val); });
         w.println(row("LinkedList", "Search", "contains", n, t2, "Comparisons", ll.getComparisonCount()));
+    }
+
+    private static void runWorkload3(PrintWriter w, int n) {
+        runListInsertRemove(w, "DynamicArray", n);
+        runListInsertRemove(w, "LinkedList", n);
+    }
+
+    private static void runListInsertRemove(PrintWriter w, String name, int n) {
+        ListStructure list1 = name.equals("DynamicArray") ? buildDA(n) : buildLL(n);
+        double tInsertBegin = timeOp(() -> {
+            list1.resetMetrics();
+            for (int i = 0; i < 1_000; i++) list1.add(0, i);
+        });
+        w.println(row(name, "InsertRemove", "Insert-Begin", n, tInsertBegin, "Movements", list1.getMovementCount()));
+
+        ListStructure list2 = name.equals("DynamicArray") ? buildDA(n) : buildLL(n);
+        double tRemoveBegin = timeOp(() -> {
+            list2.resetMetrics();
+            for (int i = 0; i < 1_000 && list2.size() > 0; i++) list2.remove(0);
+        });
+        w.println(row(name, "InsertRemove", "Remove-Begin", n, tRemoveBegin, "Movements", list2.getMovementCount()));
     }
 
     private static double timeOp(Runnable task) {
