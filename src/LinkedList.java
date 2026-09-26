@@ -64,7 +64,33 @@ public class LinkedList implements ListStructure {
         movementCount++;
     }
 
-    @Override public int remove(int index) { return 0; }
+    @Override
+    public int remove(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        int removedValue;
+        if (index == 0) {
+            removedValue = head.value;
+            head = head.next;
+            if (head == null) tail = null;
+        } else {
+            Node prev = head;
+            for (int i = 0; i < index - 1; i++) {
+                prev = prev.next;
+                movementCount++;
+            }
+            Node toRemove = prev.next;
+            removedValue = toRemove.value;
+            prev.next = toRemove.next;
+            if (toRemove == tail) tail = prev;
+        }
+        size--;
+        movementCount++;
+        return removedValue;
+    }
+
     @Override public int get(int index) { return 0; }
     @Override public boolean contains(int x) { return false; }
     @Override public void resetMetrics() {}
