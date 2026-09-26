@@ -29,8 +29,30 @@ public class DynamicArray implements ListStructure {
         return size;
     }
 
-    @Override public void add(int x) {}
-    @Override public void add(int index, int x) {}
+    @Override
+    public void add(int x) {
+        ensureCapacity();
+        data[size] = x;
+        size++;
+        movementCount++;
+    }
+
+    @Override
+    public void add(int index, int x) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+        ensureCapacity();
+
+        for (int i = size; i > index; i--) {
+            data[i] = data[i - 1];
+            movementCount++;
+        }
+
+        data[index] = x;
+        size++;
+    }
+
     @Override public int remove(int index) { return 0; }
     @Override public int get(int index) { return 0; }
     @Override public boolean contains(int x) { return false; }
