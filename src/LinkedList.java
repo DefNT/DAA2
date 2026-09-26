@@ -21,8 +21,49 @@ public class LinkedList implements ListStructure {
         return size;
     }
 
-    @Override public void add(int x) {}
-    @Override public void add(int index, int x) {}
+    @Override
+    public void add(int x) {
+        Node node = new Node(x);
+        if (head == null) {
+            head = node;
+            tail = node;
+        } else {
+            tail.next = node;
+            tail = node;
+        }
+        size++;
+        movementCount++;
+    }
+
+    @Override
+    public void add(int index, int x) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+
+        if (index == size) {
+            add(x);
+            return;
+        }
+
+        Node newNode = new Node(x);
+        if (index == 0) {
+            newNode.next = head;
+            head = newNode;
+            if (size == 0) tail = newNode;
+        } else {
+            Node prev = head;
+            for (int i = 0; i < index - 1; i++) {
+                prev = prev.next;
+                movementCount++;
+            }
+            newNode.next = prev.next;
+            prev.next = newNode;
+        }
+        size++;
+        movementCount++;
+    }
+
     @Override public int remove(int index) { return 0; }
     @Override public int get(int index) { return 0; }
     @Override public boolean contains(int x) { return false; }
