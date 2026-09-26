@@ -40,5 +40,49 @@ public class MinHeap {
         siftUp(size - 1);
     }
 
-    private void siftUp(int index) {}
+    private void siftUp(int index) {
+        while (index > 0) {
+            int parent = (index - 1) / 2;
+            comparisonCount++;
+            if (data[index] < data[parent]) {
+                swap(index, parent);
+                index = parent;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private void siftDown(int index) {
+        while (true) {
+            int left = 2 * index + 1;
+            int right = 2 * index + 2;
+            int smallest = index;
+
+            if (left < size) {
+                comparisonCount++;
+                if (data[left] < data[smallest]) {
+                    smallest = left;
+                }
+            }
+            if (right < size) {
+                comparisonCount++;
+                if (data[right] < data[smallest]) {
+                    smallest = right;
+                }
+            }
+
+            if (smallest == index) {
+                break;
+            }
+            swap(index, smallest);
+            index = smallest;
+        }
+    }
+
+    private void swap(int i, int j) {
+        int temp = data[i];
+        data[i] = data[j];
+        data[j] = temp;
+    }
 }
