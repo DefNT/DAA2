@@ -3,6 +3,7 @@ public class Tests {
     public static void runAll() {
         testDynamicArray();
         testLinkedList();
+        testMinHeap();
         System.out.println("Tests passed");
     }
 
@@ -56,5 +57,25 @@ public class Tests {
         if (!condition) {
             throw new RuntimeException("Test Failed: " + message);
         }
+    }
+
+    private static void testMinHeap() {
+        MinHeap heap = new MinHeap();
+
+        try {
+            heap.peekMin();
+            check(false, "Heap: empty peek");
+        } catch (IllegalStateException e) {}
+
+        int[] input = {15, 3, 9, 1, 30};
+        for (int x : input) heap.insert(x);
+
+        check(heap.peekMin() == 1, "Heap: peek minimum");
+
+        int[] expected = {1, 3, 9, 15, 30};
+        for (int exp : expected) {
+            check(heap.extractMin() == exp, "Heap: sorted extraction order");
+        }
+        check(heap.size() == 0, "Heap: empty after extract");
     }
 }
