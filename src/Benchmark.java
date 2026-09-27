@@ -57,36 +57,62 @@ public class Benchmark {
     }
 
     private static void runListInsertRemove(PrintWriter w, String name, int n) {
-        ListStructure list1 = name.equals("DynamicArray") ? buildDA(n) : buildLL(n);
-        double tInsertBegin = timeOp(() -> {
-            list1.resetMetrics();
-            for (int i = 0; i < 1_000; i++) list1.add(0, i);
-        });
-        w.println(row(name, "InsertRemove", "Insert-Begin", n, tInsertBegin, "Movements", list1.getMovementCount()));
 
-        ListStructure list2 = name.equals("DynamicArray") ? buildDA(n) : buildLL(n);
-        double tRemoveBegin = timeOp(() -> {
-            list2.resetMetrics();
-            for (int i = 0; i < 1_000 && list2.size() > 0; i++) list2.remove(0);
-        });
-        w.println(row(name, "InsertRemove", "Remove-Begin", n, tRemoveBegin, "Movements", list2.getMovementCount()));
+        long totalInsertTime = 0;
+        ListStructure lastAfterInsert = null;
+        for (int rep = 0; rep < REPETITIONS; rep++) {
+            ListStructure list = name.equals("DynamicArray") ? buildDA(n) : buildLL(n);
+            list.resetMetrics();
+            long start = System.nanoTime();
+            for (int i = 0; i < 1_000; i++) list.add(0, i);
+            totalInsertTime += System.nanoTime() - start;
+            lastAfterInsert = list;
+        }
+        double tInsertBegin = totalInsertTime / (double) REPETITIONS;
+        w.println(row(name, "InsertRemove", "Insert-Begin", n, tInsertBegin, "Movements", lastAfterInsert.getMovementCount()));
+
+        long totalRemoveTime = 0;
+        ListStructure lastAfterRemove = null;
+        for (int rep = 0; rep < REPETITIONS; rep++) {
+            ListStructure list = name.equals("DynamicArray") ? buildDA(n) : buildLL(n);
+            list.resetMetrics();
+            long start = System.nanoTime();
+            for (int i = 0; i < 1_000 && list.size() > 0; i++) list.remove(0);
+            totalRemoveTime += System.nanoTime() - start;
+            lastAfterRemove = list;
+        }
+        double tRemoveBegin = totalRemoveTime / (double) REPETITIONS;
+        w.println(row(name, "InsertRemove", "Remove-Begin", n, tRemoveBegin, "Movements", lastAfterRemove.getMovementCount()));
     }
 
     private static void runWorkload4(PrintWriter w, int n) {
         int[] values = randomArray(n, n * 10, SEED + 3);
-        MinHeap heap = new MinHeap();
-
-        double tInsert = timeOp(() -> {
+        long totalInsertTime = 0;
+        MinHeap lastAfterInsert = null;
+        for (int rep = 0; rep < REPETITIONS; rep++) {
+            MinHeap heap = new MinHeap();
             heap.resetMetrics();
+            long start = System.nanoTime();
             for (int v : values) heap.insert(v);
-        });
-        w.println(row("MinHeap", "PriorityProcessing", "Insert", n, tInsert, "Comparisons", heap.getComparisonCount()));
+            totalInsertTime += System.nanoTime() - start;
+            lastAfterInsert = heap;
+        }
+        double tInsert = totalInsertTime / (double) REPETITIONS;
+        w.println(row("MinHeap", "PriorityProcessing", "Insert", n, tInsert, "Comparisons", lastAfterInsert.getComparisonCount()));
 
-        double tExtract = timeOp(() -> {
+        long totalExtractTime = 0;
+        MinHeap lastAfterExtract = null;
+        for (int rep = 0; rep < REPETITIONS; rep++) {
+            MinHeap heap = new MinHeap();
+            for (int v : values) heap.insert(v);
             heap.resetMetrics();
+            long start = System.nanoTime();
             while (heap.size() > 0) heap.extractMin();
-        });
-        w.println(row("MinHeap", "PriorityProcessing", "Extract", n, tExtract, "Comparisons", heap.getComparisonCount()));
+            totalExtractTime += System.nanoTime() - start;
+            lastAfterExtract = heap;
+        }
+        double tExtract = totalExtractTime / (double) REPETITIONS;
+        w.println(row("MinHeap", "PriorityProcessing", "Extract", n, tExtract, "Comparisons", lastAfterExtract.getComparisonCount()));
     }
 
     private static double timeOp(Runnable task) {
