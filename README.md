@@ -143,9 +143,9 @@ private void siftDown(int index) {
 ### Benchmark Plots
 
 * **Time Scale Charts**: <img width="1500" height="1050" alt="image" src="https://github.com/user-attachments/assets/a043c211-1dea-4198-8407-514cda71dbe8" />
- <img width="1500" height="1050" alt="image" src="https://github.com/user-attachments/assets/d6034aa1-b2d6-4975-ab42-5f4dc4352be0" />
- <img width="1500" height="1050" alt="image" src="https://github.com/user-attachments/assets/af17fcdb-fd80-4740-99d8-eedababe2be2" />
- <img width="1500" height="1050" alt="image" src="https://github.com/user-attachments/assets/d61230e3-a158-49c6-8223-b0d08cddd161" />
+, <img width="1500" height="1050" alt="image" src="https://github.com/user-attachments/assets/d6034aa1-b2d6-4975-ab42-5f4dc4352be0" />
+, <img width="1500" height="1050" alt="image" src="https://github.com/user-attachments/assets/af17fcdb-fd80-4740-99d8-eedababe2be2" />
+, <img width="1500" height="1050" alt="image" src="https://github.com/user-attachments/assets/d61230e3-a158-49c6-8223-b0d08cddd161" />
 
 
 
